@@ -1,41 +1,33 @@
-from sklearn.preprocessing import StandardScaler, LabelEncoder, OneHotEncoder
+import pandas as pd
+from sklearn.preprocessing import StandardScaler, OneHotEncoder
 from sklearn.compose import ColumnTransformer
-from sklearn.pipeline import Pipeline
-import numpy as np
+import joblib
 
-# Drop header row (first row is the column names)
-train_df_clean = train_df.iloc[1:].copy()
-test_df_clean = test_df.iloc[1:].copy()
-
-# Reset index just in case
-train_df_clean.reset_index(drop=True, inplace=True)
-test_df_clean.reset_index(drop=True, inplace=True)
+# Load data
+train_df = pd.read_csv("train_kdd_small.csv", header=None).iloc[1:].reset_index(drop=True)
+test_df = pd.read_csv("test_kdd_small.csv", header=None).iloc[1:].reset_index(drop=True)
 
 # Separate features and labels
-X_train = train_df_clean.iloc[:, :-1]
-y_train = train_df_clean.iloc[:, -1]
+X_train = train_df.iloc[:, :-1]
+y_train = train_df.iloc[:, -1].apply(lambda x: 0 if x == 'normal' else 1).astype(int)
 
-X_test = test_df_clean.iloc[:, :-1]
-y_test = test_df_clean.iloc[:, -1]
+X_test = test_df.iloc[:, :-1]
+y_test = test_df.iloc[:, -1].apply(lambda x: 0 if x == 'normal' else 1).astype(int)
 
-# Convert labels to binary: normal -> 0, not_normal -> 1
-y_train_bin = y_train.apply(lambda x: 0 if x == 'normal' else 1).astype(int)
-y_test_bin = y_test.apply(lambda x: 0 if x == 'normal' else 1).astype(int)
-
-# Identify categorical columns by name (based on column 1, 2, 3)
+# Identify categorical features
 categorical_features = [1, 2, 3]
 
-# Define preprocessing pipeline
+# Preprocessing pipeline
 preprocessor = ColumnTransformer(
     transformers=[
         ('cat', OneHotEncoder(handle_unknown='ignore'), categorical_features),
         ('num', StandardScaler(), [i for i in range(X_train.shape[1]) if i not in categorical_features])
-    ]
-)
+    ])
 
-# Fit on training, transform both train and test
+# Fit and transform
 X_train_preprocessed = preprocessor.fit_transform(X_train)
 X_test_preprocessed = preprocessor.transform(X_test)
 
-# Final shapes and sample
-X_train_preprocessed.shape, X_test_preprocessed.shape, y_train_bin.value_counts(), y_test_bin.value_counts()
+# Save preprocessed data
+joblib.dump((X_train_preprocessed, y_train), "train_data.pkl")
+joblib.dump((X_test_preprocessed, y_test), "test_data.pkl")
