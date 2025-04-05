@@ -1,11 +1,14 @@
 import joblib
 import numpy as np
 import tensorflow as tf
-from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Dense, Dropout
-from tensorflow.keras.utils import to_categorical
+from tensorflow import keras
 from sklearn.metrics import classification_report
 import pickle
+
+to_categorical = keras.utils.to_categorical
+Sequential = keras.models.Sequential
+Dense = keras.layers.Dense
+Dropout = keras.layers.Dropout
 
 # Load data
 X_train, y_train = joblib.load("train_data.pkl")
