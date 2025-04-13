@@ -3,6 +3,14 @@ from sklearn.preprocessing import StandardScaler, OneHotEncoder
 from sklearn.compose import ColumnTransformer
 import joblib
 
+# Load and clean the raw CSV files
+# Extract features and labels from dataset
+# Map 'normal' to 0, and all attack types to 1
+# Create a column transformer that:
+#   - One-hot encodes categorical features
+#   - Standard scales numeric features
+# Apply transformations and save preprocessed data
+
 # Load data
 train_df = pd.read_csv("train_kdd_small.csv", header=None).iloc[1:].reset_index(drop=True)
 test_df = pd.read_csv("test_kdd_small.csv", header=None).iloc[1:].reset_index(drop=True)

@@ -19,24 +19,27 @@ y_test_oh = to_categorical(y_test)
 
 # Build model
 model = Sequential([
-    Dense(64, activation='relu', input_shape=(X_train.shape[1],)),
-    Dropout(0.3),
-    Dense(32, activation='relu'),
-    Dropout(0.3),
-    Dense(2, activation='softmax')
+    Dense(64, activation='relu', input_shape=(X_train.shape[1],)),      # First hidden layer
+    Dropout(0.3),                                                       # Dropout to prevent overfitting
+    Dense(32, activation='relu'),                                       # Second hidden layer
+    Dropout(0.3),                                                       # Dropout to prevent overfitting
+    Dense(2, activation='softmax')                                      # Output layer for binary classification
 ])
 
+# Compile the model with optimizer and loss function
 model.compile(optimizer='adam',
               loss='categorical_crossentropy',
               metrics=['accuracy'])
 
 # Train model
+#   validate on 20% of training data
 history = model.fit(X_train, y_train_oh,
                     validation_split=0.2,
                     epochs=20,
                     batch_size=32)
 
 # Evaluate model
+#   test data and generate classification report
 test_loss, test_acc = model.evaluate(X_test, y_test_oh)
 y_pred = np.argmax(model.predict(X_test), axis=1)
 report = classification_report(y_test, y_pred, target_names=['Normal', 'Attack'])

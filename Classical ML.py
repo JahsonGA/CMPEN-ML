@@ -19,9 +19,11 @@ models = {
 # Evaluate models
 results = {}
 for name, model in models.items():
-    model.fit(X_train, y_train)
-    y_pred = model.predict(X_test)
-    report = classification_report(y_test, y_pred, output_dict=True)
+    model.fit(X_train, y_train)                                         # Train the model
+    y_pred = model.predict(X_test)                                      # Predict on test set
+    report = classification_report(y_test, y_pred, output_dict=True)    # Get performance metrics
+    
+    # Summary performance of all classical models
     results[name] = {
         "Accuracy": round(report["accuracy"], 3),
         "Precision (Attack)": round(report["1"]["precision"], 3),

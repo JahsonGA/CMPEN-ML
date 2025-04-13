@@ -1,6 +1,10 @@
 import pickle
 import matplotlib.pyplot as plt
 
+# Load training history from pickle file
+# Plot training and validation accuracy over epochs
+# Plot training and validation loss over epochs
+
 # Load training history
 with open("dl_history.pkl", "rb") as f:
     history = pickle.load(f)
